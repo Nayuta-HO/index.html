@@ -198,12 +198,31 @@
           <div>
             <label class="block text-[11px] font-semibold text-slate-500 mb-1">科目</label>
             <select id="timer-subject-select" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-medium focus:outline-none focus:border-indigo-500">
-              <option value="英語">英語</option>
-              <option value="数学">数学</option>
-              <option value="国語">国語</option>
-              <option value="理科">理科</option>
-              <option value="社会">社会</option>
-              <option value="その他">その他</option>
+              <optgroup label="文理共通">
+                <option value="英語">英語</option>
+                <option value="現代文">現代文</option>
+                <option value="数学1">数学1</option>
+                <option value="数学2">数学2</option>
+                <option value="情報">情報</option>
+              </optgroup>
+              <optgroup label="文系科目">
+                <option value="世界史">世界史</option>
+                <option value="日本史">日本史</option>
+                <option value="地理">地理</option>
+                <option value="公共">公共</option>
+                <option value="倫理">倫理</option>
+                <option value="政治・経済">政治・経済</option>
+                <option value="古文">古文</option>
+                <option value="漢文">漢文</option>
+                <option value="小論文">小論文</option>
+              </optgroup>
+              <optgroup label="理系科目">
+                <option value="数学3">数学3</option>
+                <option value="物理">物理</option>
+                <option value="化学">化学</option>
+                <option value="生物">生物</option>
+                <option value="地学">地学</option>
+              </optgroup>
             </select>
           </div>
           <div>
@@ -333,10 +352,15 @@
         <div class="flex gap-1.5 overflow-x-auto pb-2 mb-3" id="bookshelf-filter-bar">
           <button data-filter="すべて" class="filter-chip active px-3 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white whitespace-nowrap">すべて</button>
           <button data-filter="英語" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">英語</button>
-          <button data-filter="数学" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">数学</button>
-          <button data-filter="国語" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">国語</button>
-          <button data-filter="理科" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">理科</button>
-          <button data-filter="社会" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">社会</button>
+          <button data-filter="数学1" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">数学1</button>
+          <button data-filter="数学2" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">数学2</button>
+          <button data-filter="数学3" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">数学3</button>
+          <button data-filter="現代文" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">現代文</button>
+          <button data-filter="古文" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">古文</button>
+          <button data-filter="世界史" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">世界史</button>
+          <button data-filter="日本史" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">日本史</button>
+          <button data-filter="物理" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">物理</button>
+          <button data-filter="化学" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">化学</button>
         </div>
 
         <div id="materials-list" class="space-y-3">
@@ -350,12 +374,31 @@
           <h2 class="font-bold text-sm text-slate-900">すべての学習ログ</h2>
           <select id="log-filter-subject" class="text-xs bg-slate-100 border border-slate-200 rounded-lg px-2.5 py-1 font-semibold">
             <option value="すべて">全科目</option>
-            <option value="英語">英語</option>
-            <option value="数学">数学</option>
-            <option value="国語">国語</option>
-            <option value="理科">理科</option>
-            <option value="社会">社会</option>
-            <option value="その他">その他</option>
+            <optgroup label="文理共通">
+              <option value="英語">英語</option>
+              <option value="現代文">現代文</option>
+              <option value="数学1">数学1</option>
+              <option value="数学2">数学2</option>
+              <option value="情報">情報</option>
+            </optgroup>
+            <optgroup label="文系科目">
+              <option value="世界史">世界史</option>
+              <option value="日本史">日本史</option>
+              <option value="地理">地理</option>
+              <option value="公共">公共</option>
+              <option value="倫理">倫理</option>
+              <option value="政治・経済">政治・経済</option>
+              <option value="古文">古文</option>
+              <option value="漢文">漢文</option>
+              <option value="小論文">小論文</option>
+            </optgroup>
+            <optgroup label="理系科目">
+              <option value="数学3">数学3</option>
+              <option value="物理">物理</option>
+              <option value="化学">化学</option>
+              <option value="生物">生物</option>
+              <option value="地学">地学</option>
+            </optgroup>
           </select>
         </div>
         <div id="all-logs-list" class="space-y-2.5">
@@ -391,12 +434,31 @@
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">科目</label>
             <select id="task-subject-select" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2 bg-slate-50">
-              <option value="英語">英語</option>
-              <option value="数学">数学</option>
-              <option value="国語">国語</option>
-              <option value="理科">理科</option>
-              <option value="社会">社会</option>
-              <option value="その他">その他</option>
+              <optgroup label="文理共通">
+                <option value="英語">英語</option>
+                <option value="現代文">現代文</option>
+                <option value="数学1">数学1</option>
+                <option value="数学2">数学2</option>
+                <option value="情報">情報</option>
+              </optgroup>
+              <optgroup label="文系科目">
+                <option value="世界史">世界史</option>
+                <option value="日本史">日本史</option>
+                <option value="地理">地理</option>
+                <option value="公共">公共</option>
+                <option value="倫理">倫理</option>
+                <option value="政治・経済">政治・経済</option>
+                <option value="古文">古文</option>
+                <option value="漢文">漢文</option>
+                <option value="小論文">小論文</option>
+              </optgroup>
+              <optgroup label="理系科目">
+                <option value="数学3">数学3</option>
+                <option value="物理">物理</option>
+                <option value="化学">化学</option>
+                <option value="生物">生物</option>
+                <option value="地学">地学</option>
+              </optgroup>
             </select>
           </div>
           <div>
@@ -473,12 +535,31 @@
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">科目</label>
             <select id="log-subject-input" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
-              <option value="英語">英語</option>
-              <option value="数学">数学</option>
-              <option value="国語">国語</option>
-              <option value="理科">理科</option>
-              <option value="社会">社会</option>
-              <option value="その他">その他</option>
+              <optgroup label="文理共通">
+                <option value="英語">英語</option>
+                <option value="現代文">現代文</option>
+                <option value="数学1">数学1</option>
+                <option value="数学2">数学2</option>
+                <option value="情報">情報</option>
+              </optgroup>
+              <optgroup label="文系科目">
+                <option value="世界史">世界史</option>
+                <option value="日本史">日本史</option>
+                <option value="地理">地理</option>
+                <option value="公共">公共</option>
+                <option value="倫理">倫理</option>
+                <option value="政治・経済">政治・経済</option>
+                <option value="古文">古文</option>
+                <option value="漢文">漢文</option>
+                <option value="小論文">小論文</option>
+              </optgroup>
+              <optgroup label="理系科目">
+                <option value="数学3">数学3</option>
+                <option value="物理">物理</option>
+                <option value="化学">化学</option>
+                <option value="生物">生物</option>
+                <option value="地学">地学</option>
+              </optgroup>
             </select>
           </div>
         </div>
@@ -526,12 +607,31 @@
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">科目</label>
             <select id="mat-subject-input" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
-              <option value="英語">英語</option>
-              <option value="数学">数学</option>
-              <option value="国語">国語</option>
-              <option value="理科">理科</option>
-              <option value="社会">社会</option>
-              <option value="その他">その他</option>
+              <optgroup label="文理共通">
+                <option value="英語">英語</option>
+                <option value="現代文">現代文</option>
+                <option value="数学1">数学1</option>
+                <option value="数学2">数学2</option>
+                <option value="情報">情報</option>
+              </optgroup>
+              <optgroup label="文系科目">
+                <option value="世界史">世界史</option>
+                <option value="日本史">日本史</option>
+                <option value="地理">地理</option>
+                <option value="公共">公共</option>
+                <option value="倫理">倫理</option>
+                <option value="政治・経済">政治・経済</option>
+                <option value="古文">古文</option>
+                <option value="漢文">漢文</option>
+                <option value="小論文">小論文</option>
+              </optgroup>
+              <optgroup label="理系科目">
+                <option value="数学3">数学3</option>
+                <option value="物理">物理</option>
+                <option value="化学">化学</option>
+                <option value="生物">生物</option>
+                <option value="地学">地学</option>
+              </optgroup>
             </select>
           </div>
           <div>
@@ -583,12 +683,31 @@
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">科目</label>
             <select id="exam-subject-input" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
-              <option value="英語">英語</option>
-              <option value="数学">数学</option>
-              <option value="国語">国語</option>
-              <option value="理科">理科</option>
-              <option value="社会">社会</option>
-              <option value="総合">総合</option>
+              <optgroup label="文理共通">
+                <option value="英語">英語</option>
+                <option value="現代文">現代文</option>
+                <option value="数学1">数学1</option>
+                <option value="数学2">数学2</option>
+                <option value="情報">情報</option>
+              </optgroup>
+              <optgroup label="文系科目">
+                <option value="世界史">世界史</option>
+                <option value="日本史">日本史</option>
+                <option value="地理">地理</option>
+                <option value="公共">公共</option>
+                <option value="倫理">倫理</option>
+                <option value="政治・経済">政治・経済</option>
+                <option value="古文">古文</option>
+                <option value="漢文">漢文</option>
+                <option value="小論文">小論文</option>
+              </optgroup>
+              <optgroup label="理系科目">
+                <option value="数学3">数学3</option>
+                <option value="物理">物理</option>
+                <option value="化学">化学</option>
+                <option value="生物">生物</option>
+                <option value="地学">地学</option>
+              </optgroup>
             </select>
           </div>
         </div>
@@ -705,22 +824,22 @@
         },
         materials: [
           { id: 'mat_1', title: 'ターゲット1900', subject: '英語', totalPages: 1900, currentPage: 1250, laps: 2 },
-          { id: 'mat_2', title: '青チャート 数学I+A', subject: '数学', totalPages: 420, currentPage: 210, laps: 1 },
-          { id: 'mat_3', title: '古文単語315', subject: '国語', totalPages: 315, currentPage: 240, laps: 2 }
+          { id: 'mat_2', title: '青チャート 数学1', subject: '数学1', totalPages: 420, currentPage: 210, laps: 1 },
+          { id: 'mat_3', title: '古文単語315', subject: '古文', totalPages: 315, currentPage: 240, laps: 2 }
         ],
         logs: [
           { id: 'log_1', date: today, subject: '英語', materialId: 'mat_1', minutes: 65, pages: 100, memo: 'Sec.12〜13 集中暗記' },
-          { id: 'log_2', date: today, subject: '数学', materialId: 'mat_2', minutes: 60, pages: 12, memo: '2次関数の最大最小 例題' },
-          { id: 'log_3', date: getOffsetDateStr(-1), subject: '数学', materialId: 'mat_2', minutes: 90, pages: 15, memo: '三角比の応用' },
-          { id: 'log_4', date: getOffsetDateStr(-1), subject: '国語', materialId: 'mat_3', minutes: 45, pages: 50, memo: '重要古語チェック' },
+          { id: 'log_2', date: today, subject: '数学1', materialId: 'mat_2', minutes: 60, pages: 12, memo: '2次関数の最大最小 例題' },
+          { id: 'log_3', date: getOffsetDateStr(-1), subject: '数学1', materialId: 'mat_2', minutes: 90, pages: 15, memo: '三角比の応用' },
+          { id: 'log_4', date: getOffsetDateStr(-1), subject: '古文', materialId: 'mat_3', minutes: 45, pages: 50, memo: '重要古語チェック' },
           { id: 'log_5', date: getOffsetDateStr(-2), subject: '英語', materialId: 'mat_1', minutes: 110, pages: 150, memo: '長文演習＋単語復習' }
         ],
         pastExams: [
           { id: 'ex_1', school: '早稲田大学', faculty: '商学部', year: '2025年度', subject: '英語', timeMinutes: 85, accuracy: 82, note: '大問4の長文で少し時間がかかった' },
-          { id: 'ex_2', school: '共通テスト過去問', faculty: '本試', year: '2025年度', subject: '数学', timeMinutes: 68, accuracy: 74, note: 'データの分析で計算ミス。見直し時間確保' }
+          { id: 'ex_2', school: '共通テスト過去問', faculty: '本試', year: '2025年度', subject: '数学1', timeMinutes: 68, accuracy: 74, note: 'データの分析で計算ミス。見直し時間確保' }
         ],
         dailyTasks: [
-          { id: 'task_1', date: today, materialId: 'mat_2', title: '青チャート 数学I+A', subject: '数学', targetRange: 'P.211〜225（例題10題）', targetAmount: 15, estMinutes: 50, completed: false },
+          { id: 'task_1', date: today, materialId: 'mat_2', title: '青チャート 数学1', subject: '数学1', targetRange: 'P.211〜225（例題10題）', targetAmount: 15, estMinutes: 50, completed: false },
           { id: 'task_2', date: today, materialId: 'mat_1', title: 'ターゲット1900', subject: '英語', targetRange: 'No.1251〜1350（100単語）', targetAmount: 100, estMinutes: 30, completed: true }
         ]
       };
@@ -748,11 +867,24 @@
     function getSubjectBadgeColor(subject) {
       const map = {
         '英語': 'bg-indigo-100 text-indigo-700',
-        '数学': 'bg-rose-100 text-rose-700',
-        '国語': 'bg-amber-100 text-amber-700',
-        '理科': 'bg-emerald-100 text-emerald-700',
-        '社会': 'bg-purple-100 text-purple-700',
-        '総合': 'bg-slate-200 text-slate-800',
+        '現代文': 'bg-amber-100 text-amber-700',
+        '古文': 'bg-amber-100 text-amber-700',
+        '漢文': 'bg-amber-100 text-amber-700',
+        '数学1': 'bg-rose-100 text-rose-700',
+        '数学2': 'bg-rose-100 text-rose-700',
+        '数学3': 'bg-rose-100 text-rose-700',
+        '物理': 'bg-emerald-100 text-emerald-700',
+        '化学': 'bg-emerald-100 text-emerald-700',
+        '生物': 'bg-emerald-100 text-emerald-700',
+        '地学': 'bg-emerald-100 text-emerald-700',
+        '世界史': 'bg-purple-100 text-purple-700',
+        '日本史': 'bg-purple-100 text-purple-700',
+        '地理': 'bg-purple-100 text-purple-700',
+        '公共': 'bg-purple-100 text-purple-700',
+        '倫理': 'bg-purple-100 text-purple-700',
+        '政治・経済': 'bg-purple-100 text-purple-700',
+        '情報': 'bg-sky-100 text-sky-700',
+        '小論文': 'bg-slate-200 text-slate-800',
         'その他': 'bg-slate-100 text-slate-700'
       };
       return map[subject] || 'bg-slate-100 text-slate-700';
@@ -973,7 +1105,6 @@
       }
 
       container.innerHTML = appState.pastExams.slice().reverse().map(ex => {
-        // Backward compatibility if old records exist
         const titleText = ex.school
           ? `${ex.school}${ex.faculty ? ' ' + ex.faculty : ''}${ex.year ? '（' + ex.year + '）' : ''}`
           : (ex.name || '過去問・模試');
@@ -1059,7 +1190,7 @@
           datasets: [{
             data: subjValues.length ? subjValues : [1],
             backgroundColor: subjLabels.length
-              ? ['#6366f1', '#f43f5e', '#f59e0b', '#10b981', '#a855f7', '#64748b']
+              ? ['#6366f1', '#f43f5e', '#f59e0b', '#10b981', '#a855f7', '#64748b', '#3b82f6', '#ec4899', '#14b8a6', '#84cc16']
               : ['#e2e8f0']
           }]
         },
