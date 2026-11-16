@@ -53,7 +53,6 @@
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    /* Custom scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -237,4 +236,1248 @@
 
       <!-- Milestone Card -->
       <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm">
-        <div class="flex items-center justify-between mb-
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center">
+              <i class="fa-solid fa-flag-checkered"></i>
+            </div>
+            <div>
+              <h2 class="font-bold text-sm text-slate-900">マイルストーン目標</h2>
+              <p class="text-xs text-slate-500">直近の模試・定期試験など</p>
+            </div>
+          </div>
+          <button id="edit-milestone-btn" class="text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition">
+            編集
+          </button>
+        </div>
+        <div class="bg-rose-50/70 border border-rose-100 rounded-xl p-3 mt-2 flex items-center justify-between">
+          <div>
+            <p id="milestone-title-display" class="font-bold text-sm text-slate-900">第2回 全統共通テスト模試</p>
+            <p id="milestone-date-display" class="text-xs text-slate-600 mt-0.5">目標日: 2026-12-06</p>
+          </div>
+          <div class="text-right">
+            <span class="text-[11px] font-bold text-rose-600 block">残り</span>
+            <span id="milestone-days-left" class="text-xl font-extrabold text-rose-600">20日</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Logs Summary -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="font-bold text-sm text-slate-900">今日の学習履歴</h2>
+          <span id="today-log-count" class="text-xs font-semibold text-slate-500">0件</span>
+        </div>
+        <div id="today-logs-list" class="space-y-2.5">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 2: ANALYTICS & PAST EXAMS ==================== -->
+    <section id="tab-analytics" class="tab-content space-y-4">
+
+      <!-- Weekly Bar Chart -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm">
+        <h2 class="font-bold text-sm text-slate-900 mb-1">週間学習時間（直近7日間）</h2>
+        <p class="text-xs text-slate-500 mb-4">毎日の積み上げを可視化</p>
+        <div class="h-56">
+          <canvas id="weeklyChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Subject Doughnut Chart -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm">
+        <h2 class="font-bold text-sm text-slate-900 mb-1">科目別バランス（累計）</h2>
+        <p class="text-xs text-slate-500 mb-4">偏りがないかチェック</p>
+        <div class="h-56 flex items-center justify-center">
+          <canvas id="subjectChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Past Exam Tracker (School, Faculty, Time Taken, Accuracy %) -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h2 class="font-bold text-sm text-slate-900">過去問・模試スコア記録</h2>
+            <p class="text-xs text-slate-500">学校・学部・解答時間・正答率をストック</p>
+          </div>
+          <button id="open-past-exam-modal-btn" class="text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg shadow-sm transition">
+            <i class="fa-solid fa-plus mr-1"></i>スコア追加
+          </button>
+        </div>
+        <div id="past-exams-list" class="space-y-2.5">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 3: BOOKSHELF & ALL LOGS ==================== -->
+    <section id="tab-bookshelf" class="tab-content space-y-4">
+
+      <!-- Materials Bookshelf -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h2 class="font-bold text-sm text-slate-900">マイ本棚（登録教材）</h2>
+            <p class="text-xs text-slate-500">周回数・進捗ページ数を管理</p>
+          </div>
+          <button id="open-material-modal-btn" class="text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg shadow-sm transition">
+            <i class="fa-solid fa-plus mr-1"></i>教材登録
+          </button>
+        </div>
+
+        <!-- Subject Filter -->
+        <div class="flex gap-1.5 overflow-x-auto pb-2 mb-3" id="bookshelf-filter-bar">
+          <button data-filter="すべて" class="filter-chip active px-3 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white whitespace-nowrap">すべて</button>
+          <button data-filter="英語" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">英語</button>
+          <button data-filter="数学" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">数学</button>
+          <button data-filter="国語" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">国語</button>
+          <button data-filter="理科" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">理科</button>
+          <button data-filter="社会" class="filter-chip px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 whitespace-nowrap">社会</button>
+        </div>
+
+        <div id="materials-list" class="space-y-3">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Full Study Log History -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="font-bold text-sm text-slate-900">すべての学習ログ</h2>
+          <select id="log-filter-subject" class="text-xs bg-slate-100 border border-slate-200 rounded-lg px-2.5 py-1 font-semibold">
+            <option value="すべて">全科目</option>
+            <option value="英語">英語</option>
+            <option value="数学">数学</option>
+            <option value="国語">国語</option>
+            <option value="理科">理科</option>
+            <option value="社会">社会</option>
+            <option value="その他">その他</option>
+          </select>
+        </div>
+        <div id="all-logs-list" class="space-y-2.5">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. Add Daily Task Modal -->
+  <div id="add-task-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-base text-slate-900">今日のテキスト・問題ノルマ追加</h3>
+        <button onclick="closeModal('add-task-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form id="add-task-form" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">教材を選択（登録済みテキスト）</label>
+          <select id="task-material-select" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2 bg-slate-50">
+            <option value="">-- 自由入力（教材を選ばない） --</option>
+          </select>
+        </div>
+        <div id="task-custom-title-wrapper">
+          <label class="block text-xs font-bold text-slate-700 mb-1">教材名・タスク名</label>
+          <input type="text" id="task-custom-title" placeholder="例: 青チャート 数学I+A" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">科目</label>
+            <select id="task-subject-select" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2 bg-slate-50">
+              <option value="英語">英語</option>
+              <option value="数学">数学</option>
+              <option value="国語">国語</option>
+              <option value="理科">理科</option>
+              <option value="社会">社会</option>
+              <option value="その他">その他</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">目標範囲・ノルマ</label>
+            <input type="text" id="task-target-range" required placeholder="例: P.45〜60 / 30単語" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">進めるページ/問題数（任意）</label>
+            <input type="number" id="task-target-amount" min="0" placeholder="例: 15" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">目安時間（分・任意）</label>
+            <input type="number" id="task-est-minutes" min="0" placeholder="例: 45" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('add-task-modal')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100">キャンセル</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700">追加する</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Complete Task & Log Modal -->
+  <div id="complete-task-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-check"></i></span>
+          <h3 class="font-bold text-base text-slate-900">ノルマ完了！学習ログに記録</h3>
+        </div>
+        <button onclick="closeModal('complete-task-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <p id="complete-task-summary" class="text-xs font-bold text-indigo-700 bg-indigo-50 px-3 py-2 rounded-xl"></p>
+      <form id="complete-task-form" class="space-y-3">
+        <input type="hidden" id="complete-task-id">
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">かかった学習時間（分）</label>
+            <input type="number" id="complete-task-minutes" min="0" value="30" required class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">進めたページ/問題数</label>
+            <input type="number" id="complete-task-pages" min="0" value="0" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">メモ（自動で範囲が入ります）</label>
+          <input type="text" id="complete-task-memo" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+        </div>
+        <div class="flex flex-col sm:flex-row justify-end gap-2 pt-2">
+          <button type="button" id="complete-without-log-btn" class="px-3 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200">チェックだけ完了にする</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700">完了してログに記録</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Manual Study Log Modal -->
+  <div id="manual-log-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-base text-slate-900">学習記録を追加</h3>
+        <button onclick="closeModal('manual-log-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form id="manual-log-form" class="space-y-3">
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">日付</label>
+            <input type="date" id="log-date-input" required class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">科目</label>
+            <select id="log-subject-input" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+              <option value="英語">英語</option>
+              <option value="数学">数学</option>
+              <option value="国語">国語</option>
+              <option value="理科">理科</option>
+              <option value="社会">社会</option>
+              <option value="その他">その他</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">教材（任意）</label>
+          <select id="log-material-input" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+            <option value="">-- 選択なし --</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">学習時間（分）</label>
+            <input type="number" id="log-minutes-input" min="1" value="60" required class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">進めたページ/問題数</label>
+            <input type="number" id="log-pages-input" min="0" value="0" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">学習内容・メモ</label>
+          <input type="text" id="log-memo-input" placeholder="例: 第3章の例題1〜10を復習" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('manual-log-modal')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100">キャンセル</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700">保存する</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Register Material Modal -->
+  <div id="material-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-base text-slate-900">教材を本棚に登録</h3>
+        <button onclick="closeModal('material-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form id="material-form" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">教材名</label>
+          <input type="text" id="mat-title-input" required placeholder="例: ターゲット1900 / 青チャート数学IA" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">科目</label>
+            <select id="mat-subject-input" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+              <option value="英語">英語</option>
+              <option value="数学">数学</option>
+              <option value="国語">国語</option>
+              <option value="理科">理科</option>
+              <option value="社会">社会</option>
+              <option value="その他">その他</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">総ページ数（または問題数）</label>
+            <input type="number" id="mat-total-pages-input" min="1" value="200" required class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">現在の進捗ページ</label>
+            <input type="number" id="mat-current-page-input" min="0" value="0" required class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">現在の周回数</label>
+            <input type="number" id="mat-laps-input" min="1" value="1" required class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('material-modal')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100">キャンセル</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700">登録する</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Past Exam Modal (School, Faculty, Time Taken, Accuracy %) -->
+  <div id="past-exam-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-base text-slate-900">過去問・模試スコアを記録</h3>
+        <button onclick="closeModal('past-exam-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form id="past-exam-form" class="space-y-3">
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">学校・模試名</label>
+            <input type="text" id="exam-school-input" required placeholder="例: 早稲田大学 / 共通テスト" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">学部名（任意）</label>
+            <input type="text" id="exam-faculty-input" placeholder="例: 商学部 / 全統模試" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">年度・回数（任意）</label>
+            <input type="text" id="exam-year-input" placeholder="例: 2025年度 / 第2回" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">科目</label>
+            <select id="exam-subject-input" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+              <option value="英語">英語</option>
+              <option value="数学">数学</option>
+              <option value="国語">国語</option>
+              <option value="理科">理科</option>
+              <option value="社会">社会</option>
+              <option value="総合">総合</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">かかった時間（分）</label>
+            <input type="number" id="exam-time-input" min="1" required placeholder="例: 80" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">正答率（%）</label>
+            <input type="number" id="exam-accuracy-input" min="0" max="100" step="0.1" required placeholder="例: 78" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">反省点・メモ（任意）</label>
+          <input type="text" id="exam-note-input" placeholder="例: 大問4の時間配分ミス。速読強化が必要" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('past-exam-modal')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100">キャンセル</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700">保存する</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. Data Management Modal -->
+  <div id="data-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-base text-slate-900">データ管理・バックアップ</h3>
+        <button onclick="closeModal('data-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed">学習記録はブラウザ内に自動保存されます。機種変更や万が一のデータ消失に備えてJSONファイルでバックアップできます。</p>
+      <div class="space-y-2">
+        <button id="export-json-btn" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 flex items-center justify-center gap-2 transition">
+          <i class="fa-solid fa-download"></i>データをバックアップ保存（JSON）
+        </button>
+        <label class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 flex items-center justify-center gap-2 cursor-pointer transition">
+          <i class="fa-solid fa-upload"></i>バックアップファイルを読み込む
+          <input type="file" id="import-json-input" accept=".json" class="hidden">
+        </label>
+        <hr class="my-2 border-slate-200">
+        <button id="load-sample-btn" class="w-full py-2 px-4 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
+          サンプルデータを読み込む
+        </button>
+        <button id="reset-all-btn" class="w-full py-2 px-4 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition">
+          すべてのデータを初期化
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300">
+    保存しました
+  </div>
+
+  <script>
+    // ==================== STATE MANAGEMENT ====================
+    const STORAGE_KEY = 'studylog_pro_data_v1';
+
+    function getTodayStr() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function getOffsetDateStr(offsetDays) {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    let appState = {
+      dailyGoalMinutes: 180,
+      milestone: {
+        title: '第2回 全統共通テスト模試',
+        date: getOffsetDateStr(20)
+      },
+      materials: [],
+      logs: [],
+      pastExams: [],
+      dailyTasks: []
+    };
+
+    function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          appState = { ...appState, ...parsed };
+          if (!Array.isArray(appState.dailyTasks)) appState.dailyTasks = [];
+        } catch (e) {
+          console.error('Failed to parse saved data', e);
+        }
+      } else {
+        seedSampleData(false);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    }
+
+    function seedSampleData(notify = true) {
+      const today = getTodayStr();
+      appState = {
+        dailyGoalMinutes: 180,
+        milestone: {
+          title: '第2回 全統共通テスト模試',
+          date: getOffsetDateStr(20)
+        },
+        materials: [
+          { id: 'mat_1', title: 'ターゲット1900', subject: '英語', totalPages: 1900, currentPage: 1250, laps: 2 },
+          { id: 'mat_2', title: '青チャート 数学I+A', subject: '数学', totalPages: 420, currentPage: 210, laps: 1 },
+          { id: 'mat_3', title: '古文単語315', subject: '国語', totalPages: 315, currentPage: 240, laps: 2 }
+        ],
+        logs: [
+          { id: 'log_1', date: today, subject: '英語', materialId: 'mat_1', minutes: 65, pages: 100, memo: 'Sec.12〜13 集中暗記' },
+          { id: 'log_2', date: today, subject: '数学', materialId: 'mat_2', minutes: 60, pages: 12, memo: '2次関数の最大最小 例題' },
+          { id: 'log_3', date: getOffsetDateStr(-1), subject: '数学', materialId: 'mat_2', minutes: 90, pages: 15, memo: '三角比の応用' },
+          { id: 'log_4', date: getOffsetDateStr(-1), subject: '国語', materialId: 'mat_3', minutes: 45, pages: 50, memo: '重要古語チェック' },
+          { id: 'log_5', date: getOffsetDateStr(-2), subject: '英語', materialId: 'mat_1', minutes: 110, pages: 150, memo: '長文演習＋単語復習' }
+        ],
+        pastExams: [
+          { id: 'ex_1', school: '早稲田大学', faculty: '商学部', year: '2025年度', subject: '英語', timeMinutes: 85, accuracy: 82, note: '大問4の長文で少し時間がかかった' },
+          { id: 'ex_2', school: '共通テスト過去問', faculty: '本試', year: '2025年度', subject: '数学', timeMinutes: 68, accuracy: 74, note: 'データの分析で計算ミス。見直し時間確保' }
+        ],
+        dailyTasks: [
+          { id: 'task_1', date: today, materialId: 'mat_2', title: '青チャート 数学I+A', subject: '数学', targetRange: 'P.211〜225（例題10題）', targetAmount: 15, estMinutes: 50, completed: false },
+          { id: 'task_2', date: today, materialId: 'mat_1', title: 'ターゲット1900', subject: '英語', targetRange: 'No.1251〜1350（100単語）', targetAmount: 100, estMinutes: 30, completed: true }
+        ]
+      };
+      saveState();
+      refreshAllUI();
+      if (notify) showToast('サンプルデータを読み込みました');
+    }
+
+    // ==================== UI UTILITIES ====================
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0');
+      setTimeout(() => toast.classList.add('opacity-0'), 2400);
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function getSubjectBadgeColor(subject) {
+      const map = {
+        '英語': 'bg-indigo-100 text-indigo-700',
+        '数学': 'bg-rose-100 text-rose-700',
+        '国語': 'bg-amber-100 text-amber-700',
+        '理科': 'bg-emerald-100 text-emerald-700',
+        '社会': 'bg-purple-100 text-purple-700',
+        '総合': 'bg-slate-200 text-slate-800',
+        'その他': 'bg-slate-100 text-slate-700'
+      };
+      return map[subject] || 'bg-slate-100 text-slate-700';
+    }
+
+    // ==================== RENDER FUNCTIONS ====================
+    function renderHeaderAndGoals() {
+      const now = new Date();
+      const days = ['日', '月', '火', '水', '木', '金', '土'];
+      document.getElementById('header-date-display').textContent =
+        `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日（${days[now.getDay()]}）`;
+
+      const today = getTodayStr();
+      const todayMinutes = appState.logs
+        .filter(l => l.date === today)
+        .reduce((sum, l) => sum + Number(l.minutes || 0), 0);
+
+      const target = appState.dailyGoalMinutes || 180;
+      const pct = Math.min(100, Math.round((todayMinutes / target) * 100));
+
+      document.getElementById('today-minutes-text').textContent = todayMinutes;
+      document.getElementById('daily-goal-target-text').textContent = target;
+      document.getElementById('daily-goal-percent-badge').textContent = `${pct}%`;
+      document.getElementById('daily-goal-bar').style.width = `${pct}%`;
+
+      const rem = Math.max(0, target - todayMinutes);
+      document.getElementById('daily-goal-remaining-text').textContent =
+        rem > 0 ? `目標達成まであと ${rem} 分` : '🎉 本日の学習時間目標を達成しました！';
+
+      // Milestone
+      document.getElementById('milestone-title-display').textContent = appState.milestone.title;
+      document.getElementById('milestone-date-display').textContent = `目標日: ${appState.milestone.date}`;
+      const diffMs = new Date(appState.milestone.date) - new Date(today);
+      const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+      document.getElementById('milestone-days-left').textContent = diffDays >= 0 ? `${diffDays}日` : '終了';
+    }
+
+    function renderDailyTasks() {
+      const today = getTodayStr();
+      const tasks = appState.dailyTasks.filter(t => t.date === today);
+      const completedCount = tasks.filter(t => t.completed).length;
+      const totalCount = tasks.length;
+      const pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+      document.getElementById('daily-task-counter').textContent = `${completedCount} / ${totalCount} 完了`;
+      document.getElementById('daily-task-bar').style.width = `${pct}%`;
+
+      const container = document.getElementById('daily-tasks-list');
+      if (tasks.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-4 px-3 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+            <p class="text-xs text-slate-500">今日のテキスト・問題ノルマはまだありません</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">右上の「＋ノルマ追加」から今日の目標範囲を設定できます</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = tasks.map(t => {
+        const badge = getSubjectBadgeColor(t.subject);
+        return `
+          <div class="flex items-center justify-between gap-2.5 p-2.5 rounded-xl border ${t.completed ? 'bg-slate-50/80 border-slate-200/80' : 'bg-white border-slate-200 shadow-2xs'} transition">
+            <button onclick="toggleDailyTask('${t.id}')" class="flex items-center gap-3 flex-1 text-left min-w-0">
+              <div class="w-5 h-5 rounded-md flex items-center justify-center shrink-0 border transition ${t.completed ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-300 bg-white hover:border-indigo-500'}">
+                ${t.completed ? '<i class="fa-solid fa-check text-[11px]"></i>' : ''}
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${badge}">${t.subject}</span>
+                  <span class="text-xs font-bold truncate ${t.completed ? 'line-through text-slate-400' : 'text-slate-900'}">${t.title}</span>
+                </div>
+                <p class="text-xs font-semibold mt-0.5 ${t.completed ? 'line-through text-slate-400' : 'text-indigo-600'}">
+                  目標: ${t.targetRange}
+                </p>
+              </div>
+            </button>
+            <button onclick="deleteDailyTask('${t.id}')" class="text-slate-400 hover:text-rose-500 p-1.5 shrink-0" title="削除">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderMaterialSelects() {
+      const selects = ['timer-material-select', 'log-material-input', 'task-material-select'];
+      selects.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const currentVal = el.value;
+        const defaultText = id === 'task-material-select' ? '-- 自由入力（教材を選ばない） --' : '-- 教材を選択しない --';
+        el.innerHTML = `<option value="">${defaultText}</option>` +
+          appState.materials.map(m => `<option value="${m.id}">[${m.subject}] ${m.title}</option>`).join('');
+        el.value = currentVal;
+      });
+    }
+
+    function renderTodayLogs() {
+      const today = getTodayStr();
+      const todayLogs = appState.logs.filter(l => l.date === today).slice().reverse();
+      document.getElementById('today-log-count').textContent = `${todayLogs.length}件`;
+
+      const container = document.getElementById('today-logs-list');
+      if (todayLogs.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 text-center py-4">今日の学習記録はまだありません</p>';
+        return;
+      }
+
+      container.innerHTML = todayLogs.map(log => {
+        const mat = appState.materials.find(m => m.id === log.materialId);
+        return `
+          <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+            <div class="min-w-0 pr-2">
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-md ${getSubjectBadgeColor(log.subject)}">${log.subject}</span>
+                <span class="text-xs font-bold text-slate-800 truncate">${mat ? mat.title : 'フリー学習'}</span>
+              </div>
+              ${log.memo ? `<p class="text-xs text-slate-500 mt-1 truncate">${log.memo}</p>` : ''}
+            </div>
+            <div class="text-right shrink-0">
+              <span class="text-sm font-extrabold text-slate-900">${log.minutes}分</span>
+              ${log.pages > 0 ? `<span class="block text-[11px] font-semibold text-indigo-600">+${log.pages} P/問</span>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    let currentBookshelfFilter = 'すべて';
+    function renderBookshelf() {
+      const container = document.getElementById('materials-list');
+      const filtered = currentBookshelfFilter === 'すべて'
+        ? appState.materials
+        : appState.materials.filter(m => m.subject === currentBookshelfFilter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">該当する教材がありません。「＋教材登録」から追加しましょう。</p>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(m => {
+        const pct = Math.min(100, Math.round((m.currentPage / m.totalPages) * 100));
+        return `
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-md ${getSubjectBadgeColor(m.subject)}">${m.subject}</span>
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800">${m.laps}周目</span>
+                </div>
+                <h3 class="font-bold text-sm text-slate-900 mt-1">${m.title}</h3>
+              </div>
+              <div class="flex items-center gap-1">
+                <button onclick="incrementMaterialLap('${m.id}')" class="text-[11px] font-bold px-2 py-1 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700" title="周回数を+1">
+                  +1周
+                </button>
+                <button onclick="deleteMaterial('${m.id}')" class="text-slate-400 hover:text-rose-500 p-1.5" title="削除">
+                  <i class="fa-solid fa-trash-can text-xs"></i>
+                </button>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+                <span>進捗: ${m.currentPage} / ${m.totalPages}</span>
+                <span>${pct}%</span>
+              </div>
+              <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                <div class="h-full bg-indigo-600 rounded-full transition-all" style="width: ${pct}%"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAllLogs() {
+      const filterSubj = document.getElementById('log-filter-subject').value;
+      const list = appState.logs
+        .filter(l => filterSubj === 'すべて' || l.subject === filterSubj)
+        .slice()
+        .reverse();
+
+      const container = document.getElementById('all-logs-list');
+      if (list.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">学習ログがありません</p>';
+        return;
+      }
+
+      container.innerHTML = list.map(log => {
+        const mat = appState.materials.find(m => m.id === log.materialId);
+        return `
+          <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50/70">
+            <div class="min-w-0 pr-2">
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] text-slate-400 font-mono">${log.date}</span>
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-md ${getSubjectBadgeColor(log.subject)}">${log.subject}</span>
+                <span class="text-xs font-bold text-slate-800 truncate">${mat ? mat.title : 'フリー学習'}</span>
+              </div>
+              ${log.memo ? `<p class="text-xs text-slate-500 mt-1 truncate">${log.memo}</p>` : ''}
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+              <div class="text-right">
+                <span class="text-sm font-extrabold text-slate-900">${log.minutes}分</span>
+                ${log.pages > 0 ? `<span class="block text-[11px] font-semibold text-indigo-600">+${log.pages} P/問</span>` : ''}
+              </div>
+              <button onclick="deleteLog('${log.id}')" class="text-slate-400 hover:text-rose-500 p-1"><i class="fa-solid fa-trash-can text-xs"></i></button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderPastExams() {
+      const container = document.getElementById('past-exams-list');
+      if (appState.pastExams.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 text-center py-4">まだ過去問・模試の記録がありません</p>';
+        return;
+      }
+
+      container.innerHTML = appState.pastExams.slice().reverse().map(ex => {
+        // Backward compatibility if old records exist
+        const titleText = ex.school
+          ? `${ex.school}${ex.faculty ? ' ' + ex.faculty : ''}${ex.year ? '（' + ex.year + '）' : ''}`
+          : (ex.name || '過去問・模試');
+        const accuracyVal = ex.accuracy !== undefined
+          ? ex.accuracy
+          : (ex.score !== undefined && ex.maxScore ? Math.round((ex.score / ex.maxScore) * 100) : '-');
+        const timeVal = ex.timeMinutes !== undefined ? `${ex.timeMinutes}分` : '';
+
+        return `
+          <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/60 flex items-center justify-between gap-2">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-md ${getSubjectBadgeColor(ex.subject)}">${ex.subject}</span>
+                <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate">${titleText}</h4>
+              </div>
+              ${ex.note ? `<p class="text-xs text-slate-500 mt-1">${ex.note}</p>` : ''}
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+              <div class="text-right">
+                <span class="text-base font-extrabold text-indigo-600">${accuracyVal}<span class="text-xs font-bold">%</span></span>
+                ${timeVal ? `<span class="block text-[11px] font-bold text-slate-600"><i class="fa-regular fa-clock mr-0.5"></i>${timeVal}</span>` : ''}
+              </div>
+              <button onclick="deletePastExam('${ex.id}')" class="text-slate-400 hover:text-rose-500 p-1"><i class="fa-solid fa-trash-can text-xs"></i></button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==================== CHARTS ====================
+    let weeklyChartInstance = null;
+    let subjectChartInstance = null;
+
+    function renderCharts() {
+      const labels = [];
+      const dataMins = [];
+      for (let i = 6; i >= 0; i--) {
+        const dStr = getOffsetDateStr(-i);
+        labels.push(dStr.slice(5).replace('-', '/'));
+        const mins = appState.logs
+          .filter(l => l.date === dStr)
+          .reduce((sum, l) => sum + Number(l.minutes || 0), 0);
+        dataMins.push(mins);
+      }
+
+      const ctxW = document.getElementById('weeklyChart').getContext('2d');
+      if (weeklyChartInstance) weeklyChartInstance.destroy();
+      weeklyChartInstance = new Chart(ctxW, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: '学習時間（分）',
+            data: dataMins,
+            backgroundColor: '#6366f1',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+
+      const subjTotals = {};
+      appState.logs.forEach(l => {
+        subjTotals[l.subject] = (subjTotals[l.subject] || 0) + Number(l.minutes || 0);
+      });
+      const subjLabels = Object.keys(subjTotals);
+      const subjValues = Object.values(subjTotals);
+
+      const ctxS = document.getElementById('subjectChart').getContext('2d');
+      if (subjectChartInstance) subjectChartInstance.destroy();
+      subjectChartInstance = new Chart(ctxS, {
+        type: 'doughnut',
+        data: {
+          labels: subjLabels.length ? subjLabels : ['データなし'],
+          datasets: [{
+            data: subjValues.length ? subjValues : [1],
+            backgroundColor: subjLabels.length
+              ? ['#6366f1', '#f43f5e', '#f59e0b', '#10b981', '#a855f7', '#64748b']
+              : ['#e2e8f0']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11 } } }
+          }
+        }
+      });
+    }
+
+    function refreshAllUI() {
+      renderHeaderAndGoals();
+      renderDailyTasks();
+      renderMaterialSelects();
+      renderTodayLogs();
+      renderBookshelf();
+      renderAllLogs();
+      renderPastExams();
+      renderCharts();
+    }
+
+    // ==================== DAILY TASKS LOGIC ====================
+    document.getElementById('open-add-task-btn').addEventListener('click', () => {
+      document.getElementById('add-task-form').reset();
+      document.getElementById('task-custom-title-wrapper').classList.remove('hidden');
+      openModal('add-task-modal');
+    });
+
+    document.getElementById('task-material-select').addEventListener('change', (e) => {
+      const matId = e.target.value;
+      const customWrap = document.getElementById('task-custom-title-wrapper');
+      if (matId) {
+        const mat = appState.materials.find(m => m.id === matId);
+        if (mat) {
+          document.getElementById('task-subject-select').value = mat.subject;
+          document.getElementById('task-custom-title').value = mat.title;
+        }
+        customWrap.classList.add('hidden');
+      } else {
+        document.getElementById('task-custom-title').value = '';
+        customWrap.classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('add-task-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const matId = document.getElementById('task-material-select').value;
+      const mat = appState.materials.find(m => m.id === matId);
+      const customTitle = document.getElementById('task-custom-title').value.trim();
+      const title = mat ? mat.title : (customTitle || 'テキスト学習');
+      const subject = document.getElementById('task-subject-select').value;
+      const targetRange = document.getElementById('task-target-range').value.trim();
+      const targetAmount = Number(document.getElementById('task-target-amount').value || 0);
+      const estMinutes = Number(document.getElementById('task-est-minutes').value || 30);
+
+      appState.dailyTasks.push({
+        id: 'task_' + Date.now(),
+        date: getTodayStr(),
+        materialId: matId,
+        title,
+        subject,
+        targetRange,
+        targetAmount,
+        estMinutes,
+        completed: false
+      });
+
+      saveState();
+      closeModal('add-task-modal');
+      renderDailyTasks();
+      showToast('今日のノルマを追加しました');
+    });
+
+    function toggleDailyTask(taskId) {
+      const task = appState.dailyTasks.find(t => t.id === taskId);
+      if (!task) return;
+
+      if (task.completed) {
+        task.completed = false;
+        saveState();
+        renderDailyTasks();
+        showToast('未完了に戻しました');
+      } else {
+        document.getElementById('complete-task-id').value = task.id;
+        document.getElementById('complete-task-summary').textContent = `[${task.subject}] ${task.title}：${task.targetRange}`;
+        document.getElementById('complete-task-minutes').value = task.estMinutes || 30;
+        document.getElementById('complete-task-pages').value = task.targetAmount || 0;
+        document.getElementById('complete-task-memo').value = `ノルマ完了: ${task.targetRange}`;
+        openModal('complete-task-modal');
+      }
+    }
+
+    document.getElementById('complete-without-log-btn').addEventListener('click', () => {
+      const taskId = document.getElementById('complete-task-id').value;
+      const task = appState.dailyTasks.find(t => t.id === taskId);
+      if (task) {
+        task.completed = true;
+        saveState();
+        renderDailyTasks();
+        showToast('ノルマを完了にしました！');
+      }
+      closeModal('complete-task-modal');
+    });
+
+    document.getElementById('complete-task-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const taskId = document.getElementById('complete-task-id').value;
+      const task = appState.dailyTasks.find(t => t.id === taskId);
+      if (!task) return;
+
+      task.completed = true;
+
+      const minutes = Number(document.getElementById('complete-task-minutes').value || 0);
+      const pages = Number(document.getElementById('complete-task-pages').value || 0);
+      const memo = document.getElementById('complete-task-memo').value.trim();
+
+      addStudyLog({
+        date: getTodayStr(),
+        subject: task.subject,
+        materialId: task.materialId || '',
+        minutes,
+        pages,
+        memo
+      });
+
+      closeModal('complete-task-modal');
+      refreshAllUI();
+      showToast('ノルマ完了＆学習ログに記録しました！');
+    });
+
+    function deleteDailyTask(taskId) {
+      appState.dailyTasks = appState.dailyTasks.filter(t => t.id !== taskId);
+      saveState();
+      renderDailyTasks();
+      showToast('ノルマを削除しました');
+    }
+
+    // ==================== STUDY LOG & MATERIAL UPDATE ====================
+    function addStudyLog(logObj) {
+      appState.logs.push({
+        id: 'log_' + Date.now(),
+        ...logObj
+      });
+
+      if (logObj.materialId && logObj.pages > 0) {
+        const mat = appState.materials.find(m => m.id === logObj.materialId);
+        if (mat) {
+          mat.currentPage = Math.min(mat.totalPages, Number(mat.currentPage) + Number(logObj.pages));
+        }
+      }
+      saveState();
+    }
+
+    // ==================== TIMER LOGIC ====================
+    let timerInterval = null;
+    let elapsedSeconds = 0;
+
+    function updateTimerDisplay() {
+      const hrs = String(Math.floor(elapsedSeconds / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((elapsedSeconds % 3600) / 60)).padStart(2, '0');
+      const secs = String(elapsedSeconds % 60).padStart(2, '0');
+      document.getElementById('timer-display').textContent = `${hrs}:${mins}:${secs}`;
+    }
+
+    document.getElementById('timer-start-btn').addEventListener('click', () => {
+      if (timerInterval) return;
+      document.getElementById('timer-start-btn').disabled = true;
+      document.getElementById('timer-pause-btn').disabled = false;
+      document.getElementById('timer-finish-btn').disabled = false;
+      document.getElementById('timer-status-text').textContent = '集中して計測中...';
+
+      timerInterval = setInterval(() => {
+        elapsedSeconds++;
+        updateTimerDisplay();
+      }, 1000);
+    });
+
+    document.getElementById('timer-pause-btn').addEventListener('click', () => {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      document.getElementById('timer-start-btn').disabled = false;
+      document.getElementById('timer-pause-btn').disabled = true;
+      document.getElementById('timer-status-text').textContent = '一時停止中';
+    });
+
+    document.getElementById('timer-finish-btn').addEventListener('click', () => {
+      clearInterval(timerInterval);
+      timerInterval = null;
+
+      const mins = Math.max(1, Math.round(elapsedSeconds / 60));
+      const subject = document.getElementById('timer-subject-select').value;
+      const materialId = document.getElementById('timer-material-select').value;
+
+      document.getElementById('log-date-input').value = getTodayStr();
+      document.getElementById('log-subject-input').value = subject;
+      document.getElementById('log-material-input').value = materialId;
+      document.getElementById('log-minutes-input').value = mins;
+      document.getElementById('log-pages-input').value = 0;
+      document.getElementById('log-memo-input').value = '';
+
+      elapsedSeconds = 0;
+      updateTimerDisplay();
+      document.getElementById('timer-start-btn').disabled = false;
+      document.getElementById('timer-pause-btn').disabled = true;
+      document.getElementById('timer-finish-btn').disabled = true;
+      document.getElementById('timer-status-text').textContent = 'スタートを押して計測開始';
+
+      openModal('manual-log-modal');
+    });
+
+    // ==================== EVENT LISTENERS ====================
+    document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-tab-btn').forEach(b => {
+          b.classList.remove('active', 'bg-white', 'text-indigo-600', 'shadow-sm');
+          b.classList.add('text-slate-600');
+        });
+        btn.classList.add('active', 'bg-white', 'text-indigo-600', 'shadow-sm');
+        btn.classList.remove('text-slate-600');
+
+        const targetTab = btn.dataset.tab;
+        document.querySelectorAll('.tab-content').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(`tab-${targetTab}`).classList.add('active');
+        if (targetTab === 'analytics') renderCharts();
+      });
+    });
+
+    document.getElementById('edit-daily-goal-btn').addEventListener('click', () => {
+      const val = prompt('1日の目標学習時間（分）を入力してください:', appState.dailyGoalMinutes);
+      if (val !== null && !isNaN(val) && Number(val) > 0) {
+        appState.dailyGoalMinutes = Number(val);
+        saveState();
+        renderHeaderAndGoals();
+        showToast('時間目標を更新しました');
+      }
+    });
+
+    document.getElementById('edit-milestone-btn').addEventListener('click', () => {
+      const newTitle = prompt('目標の試験・イベント名:', appState.milestone.title);
+      if (!newTitle) return;
+      const newDate = prompt('目標日（YYYY-MM-DD形式）:', appState.milestone.date);
+      if (!newDate) return;
+      appState.milestone = { title: newTitle, date: newDate };
+      saveState();
+      renderHeaderAndGoals();
+      showToast('マイルストーンを更新しました');
+    });
+
+    document.getElementById('open-manual-log-btn').addEventListener('click', () => {
+      document.getElementById('log-date-input').value = getTodayStr();
+      openModal('manual-log-modal');
+    });
+
+    document.getElementById('manual-log-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      addStudyLog({
+        date: document.getElementById('log-date-input').value,
+        subject: document.getElementById('log-subject-input').value,
+        materialId: document.getElementById('log-material-input').value,
+        minutes: Number(document.getElementById('log-minutes-input').value),
+        pages: Number(document.getElementById('log-pages-input').value || 0),
+        memo: document.getElementById('log-memo-input').value.trim()
+      });
+      closeModal('manual-log-modal');
+      refreshAllUI();
+      showToast('学習記録を保存しました');
+    });
+
+    document.getElementById('open-material-modal-btn').addEventListener('click', () => {
+      document.getElementById('material-form').reset();
+      openModal('material-modal');
+    });
+
+    document.getElementById('material-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      appState.materials.push({
+        id: 'mat_' + Date.now(),
+        title: document.getElementById('mat-title-input').value.trim(),
+        subject: document.getElementById('mat-subject-input').value,
+        totalPages: Number(document.getElementById('mat-total-pages-input').value),
+        currentPage: Number(document.getElementById('mat-current-page-input').value),
+        laps: Number(document.getElementById('mat-laps-input').value)
+      });
+      saveState();
+      closeModal('material-modal');
+      refreshAllUI();
+      showToast('教材を本棚に登録しました');
+    });
+
+    function incrementMaterialLap(id) {
+      const mat = appState.materials.find(m => m.id === id);
+      if (mat) {
+        mat.laps++;
+        mat.currentPage = 0;
+        saveState();
+        renderBookshelf();
+        showToast(`${mat.title} が ${mat.laps}周目 に入りました！`);
+      }
+    }
+
+    function deleteMaterial(id) {
+      if (!confirm('この教材を削除しますか？')) return;
+      appState.materials = appState.materials.filter(m => m.id !== id);
+      saveState();
+      refreshAllUI();
+      showToast('教材を削除しました');
+    }
+
+    function deleteLog(id) {
+      if (!confirm('この学習ログを削除しますか？')) return;
+      appState.logs = appState.logs.filter(l => l.id !== id);
+      saveState();
+      refreshAllUI();
+      showToast('ログを削除しました');
+    }
+
+    // Past Exam Modal Submit
+    document.getElementById('open-past-exam-modal-btn').addEventListener('click', () => {
+      document.getElementById('past-exam-form').reset();
+      openModal('past-exam-modal');
+    });
+
+    document.getElementById('past-exam-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      appState.pastExams.push({
+        id: 'ex_' + Date.now(),
+        school: document.getElementById('exam-school-input').value.trim(),
+        faculty: document.getElementById('exam-faculty-input').value.trim(),
+        year: document.getElementById('exam-year-input').value.trim(),
+        subject: document.getElementById('exam-subject-input').value,
+        timeMinutes: Number(document.getElementById('exam-time-input').value),
+        accuracy: Number(document.getElementById('exam-accuracy-input').value),
+        note: document.getElementById('exam-note-input').value.trim()
+      });
+      saveState();
+      closeModal('past-exam-modal');
+      renderPastExams();
+      showToast('過去問・模試スコアを記録しました');
+    });
+
+    function deletePastExam(id) {
+      if (!confirm('この記録を削除しますか？')) return;
+      appState.pastExams = appState.pastExams.filter(e => e.id !== id);
+      saveState();
+      renderPastExams();
+      showToast('削除しました');
+    }
+
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.filter-chip').forEach(c => {
+          c.classList.remove('active', 'bg-indigo-600', 'text-white');
+          c.classList.add('bg-slate-100', 'text-slate-600');
+        });
+        chip.classList.add('active', 'bg-indigo-600', 'text-white');
+        chip.classList.remove('bg-slate-100', 'text-slate-600');
+        currentBookshelfFilter = chip.dataset.filter;
+        renderBookshelf();
+      });
+    });
+
+    document.getElementById('log-filter-subject').addEventListener('change', renderAllLogs);
+
+    document.getElementById('open-data-modal-btn').addEventListener('click', () => openModal('data-modal'));
+
+    document.getElementById('export-json-btn').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(appState, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `studylog_backup_${getTodayStr()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('バックアップを書き出しました');
+    });
+
+    document.getElementById('import-json-input').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const imported = JSON.parse(ev.target.result);
+          appState = { ...appState, ...imported };
+          saveState();
+          refreshAllUI();
+          closeModal('data-modal');
+          showToast('バックアップを復元しました');
+        } catch (err) {
+          alert('ファイルの読み込みに失敗しました');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById('load-sample-btn').addEventListener('click', () => {
+      seedSampleData(true);
+      closeModal('data-modal');
+    });
+
+    document.getElementById('reset-all-btn').addEventListener('click', () => {
+      if (!confirm('すべてのデータを削除して初期化しますか？')) return;
+      appState.materials = [];
+      appState.logs = [];
+      appState.pastExams = [];
+      appState.dailyTasks = [];
+      saveState();
+      refreshAllUI();
+      closeModal('data-modal');
+      showToast('すべてのデータを初期化しました');
+    });
+
+    // Init
+    loadState();
+    refreshAllUI();
+  </script>
+</body>
+</html>
