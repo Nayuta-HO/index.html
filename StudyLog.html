@@ -1347,43 +1347,66 @@
       saveState();
     }
 
-    // ==================== TIMER LOGIC ====================
+    // ==================== TIMER LOGIC (TIMESTAMP SUBTRACTION METHOD) ====================
     let timerInterval = null;
-    let elapsedSeconds = 0;
+    let timerStartTime = null;
+    let accumulatedMs = 0;
+
+    function getElapsedSeconds() {
+      const currentRunMs = timerStartTime ? (Date.now() - timerStartTime) : 0;
+      return Math.floor((accumulatedMs + currentRunMs) / 1000);
+    }
 
     function updateTimerDisplay() {
-      const hrs = String(Math.floor(elapsedSeconds / 3600)).padStart(2, '0');
-      const mins = String(Math.floor((elapsedSeconds % 3600) / 60)).padStart(2, '0');
-      const secs = String(elapsedSeconds % 60).padStart(2, '0');
+      const totalSeconds = getElapsedSeconds();
+      const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+      const secs = String(totalSeconds % 60).padStart(2, '0');
       document.getElementById('timer-display').textContent = `${hrs}:${mins}:${secs}`;
     }
 
+    // Immediately sync timer display when waking from sleep or returning to the tab
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && timerStartTime) {
+        updateTimerDisplay();
+      }
+    });
+
     document.getElementById('timer-start-btn').addEventListener('click', () => {
-      if (timerInterval) return;
+      if (timerStartTime) return;
+      timerStartTime = Date.now();
       document.getElementById('timer-start-btn').disabled = true;
       document.getElementById('timer-pause-btn').disabled = false;
       document.getElementById('timer-finish-btn').disabled = false;
       document.getElementById('timer-status-text').textContent = '集中して計測中...';
 
-      timerInterval = setInterval(() => {
-        elapsedSeconds++;
-        updateTimerDisplay();
-      }, 1000);
+      updateTimerDisplay();
+      timerInterval = setInterval(updateTimerDisplay, 250);
     });
 
     document.getElementById('timer-pause-btn').addEventListener('click', () => {
+      if (timerStartTime) {
+        accumulatedMs += Date.now() - timerStartTime;
+        timerStartTime = null;
+      }
       clearInterval(timerInterval);
       timerInterval = null;
+      updateTimerDisplay();
       document.getElementById('timer-start-btn').disabled = false;
       document.getElementById('timer-pause-btn').disabled = true;
       document.getElementById('timer-status-text').textContent = '一時停止中';
     });
 
     document.getElementById('timer-finish-btn').addEventListener('click', () => {
+      if (timerStartTime) {
+        accumulatedMs += Date.now() - timerStartTime;
+        timerStartTime = null;
+      }
       clearInterval(timerInterval);
       timerInterval = null;
 
-      const mins = Math.max(1, Math.round(elapsedSeconds / 60));
+      const totalSeconds = Math.floor(accumulatedMs / 1000);
+      const mins = Math.max(1, Math.round(totalSeconds / 60));
       const subject = document.getElementById('timer-subject-select').value;
       const materialId = document.getElementById('timer-material-select').value;
 
@@ -1394,7 +1417,7 @@
       document.getElementById('log-pages-input').value = 0;
       document.getElementById('log-memo-input').value = '';
 
-      elapsedSeconds = 0;
+      accumulatedMs = 0;
       updateTimerDisplay();
       document.getElementById('timer-start-btn').disabled = false;
       document.getElementById('timer-pause-btn').disabled = true;
