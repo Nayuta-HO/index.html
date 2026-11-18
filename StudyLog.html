@@ -91,6 +91,24 @@
     </div>
   </header>
 
+  <!-- In-App Notification Banner (when scheduled time arrives) -->
+  <div id="schedule-alert-banner" class="hidden max-w-3xl mx-auto px-4 pt-3">
+    <div class="bg-amber-50 border border-amber-300 text-amber-900 rounded-2xl p-3.5 shadow-sm flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center shrink-0 animate-bounce">
+          <i class="fa-solid fa-bell text-sm"></i>
+        </div>
+        <div class="min-w-0">
+          <p class="text-xs font-extrabold text-amber-800">勉強スケジュールの通知時間です！</p>
+          <p id="schedule-alert-text" class="text-xs font-bold text-slate-800 truncate"></p>
+        </div>
+      </div>
+      <button onclick="document.getElementById('schedule-alert-banner').classList.add('hidden')" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shrink-0">
+        OK
+      </button>
+    </div>
+  </div>
+
   <!-- Navigation Tabs -->
   <nav class="max-w-3xl mx-auto px-4 pt-3">
     <div class="grid grid-cols-3 gap-1.5 bg-slate-200/70 p-1 rounded-2xl">
@@ -126,7 +144,7 @@
               </div>
               <div>
                 <h2 class="font-bold text-sm text-slate-900">デイリー目標</h2>
-                <p class="text-xs text-slate-500">今日の学習時間 ＆ テキストノルマ</p>
+                <p class="text-xs text-slate-500">今日の学習時間 ＆ スケジュール ＆ ノルマ</p>
               </div>
             </div>
             <button id="edit-daily-goal-btn" class="text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition">
@@ -145,6 +163,30 @@
             <div id="daily-goal-bar" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
           </div>
           <p id="daily-goal-remaining-text" class="text-xs text-slate-500 mt-1.5">目標達成まであと 180 分</p>
+        </div>
+
+        <hr class="border-slate-100">
+
+        <!-- Daily Study Schedule & Notification Section (ADDED BETWEEN TIME GOAL AND TASKS) -->
+        <div>
+          <div class="flex items-center justify-between mb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <i class="fa-regular fa-calendar-check text-sky-600"></i>
+                今日の勉強スケジュール
+              </span>
+              <button id="request-notif-perm-btn" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 transition">
+                <i class="fa-regular fa-bell mr-0.5"></i>通知許可
+              </button>
+            </div>
+            <button id="open-add-schedule-btn" class="text-xs font-bold text-white bg-sky-600 hover:bg-sky-700 px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1">
+              <i class="fa-solid fa-plus"></i>予定追加
+            </button>
+          </div>
+
+          <div id="daily-schedules-list" class="space-y-2">
+            <!-- Dynamically populated -->
+          </div>
         </div>
 
         <hr class="border-slate-100">
@@ -281,6 +323,28 @@
         </div>
       </div>
 
+      <!-- Long-Term Goal Card (ADDED BETWEEN MILESTONE AND TODAY'S LOGS) -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center">
+              <i class="fa-solid fa-trophy"></i>
+            </div>
+            <div>
+              <h2 class="font-bold text-sm text-slate-900">最終的な目標（長期目標）</h2>
+              <p class="text-xs text-slate-500">第一志望校合格・最終ゴール</p>
+            </div>
+          </div>
+          <button id="edit-longterm-goal-btn" class="text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition">
+            編集
+          </button>
+        </div>
+        <div class="bg-amber-50/70 border border-amber-100 rounded-xl p-3.5 mt-2">
+          <p id="longterm-goal-title-display" class="font-extrabold text-sm sm:text-base text-slate-900">第一志望校 現役合格！</p>
+          <p id="longterm-goal-note-display" class="text-xs text-slate-600 mt-1 leading-relaxed">毎日の積み重ねを大切にして、絶対に合格を勝ち取る！</p>
+        </div>
+      </div>
+
       <!-- Recent Logs Summary -->
       <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm">
         <div class="flex items-center justify-between mb-3">
@@ -411,6 +475,83 @@
   </main>
 
   <!-- ==================== MODALS ==================== -->
+
+  <!-- 0A. Add Daily Schedule Modal -->
+  <div id="add-schedule-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-base text-slate-900">勉強スケジュールを追加</h3>
+        <button onclick="closeModal('add-schedule-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form id="add-schedule-form" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">勉強時間帯（手動入力）</label>
+          <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 flex-1 justify-center">
+              <input type="number" id="sched-start-hour" min="0" max="23" required placeholder="19" class="w-10 text-center text-sm font-bold bg-transparent focus:outline-none">
+              <span class="text-xs font-bold text-slate-500">時</span>
+              <input type="number" id="sched-start-min" min="0" max="59" required placeholder="00" class="w-10 text-center text-sm font-bold bg-transparent focus:outline-none">
+              <span class="text-xs font-bold text-slate-500">分</span>
+            </div>
+            <span class="text-xs font-bold text-slate-500">から</span>
+            <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 flex-1 justify-center">
+              <input type="number" id="sched-end-hour" min="0" max="23" required placeholder="20" class="w-10 text-center text-sm font-bold bg-transparent focus:outline-none">
+              <span class="text-xs font-bold text-slate-500">時</span>
+              <input type="number" id="sched-end-min" min="0" max="59" required placeholder="30" class="w-10 text-center text-sm font-bold bg-transparent focus:outline-none">
+              <span class="text-xs font-bold text-slate-500">分</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">勉強する内容・科目</label>
+          <input type="text" id="sched-title-input" required placeholder="例: 英語長文演習 / 数学1チャート" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+        </div>
+        <div class="bg-sky-50/70 border border-sky-100 rounded-xl p-3 space-y-2">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="sched-notif-enabled" checked class="w-4 h-4 rounded text-sky-600">
+            <span class="text-xs font-bold text-slate-800">アプリ通知を設定する</span>
+          </label>
+          <div id="sched-notif-time-row" class="flex items-center gap-2 pt-1">
+            <span class="text-xs font-semibold text-slate-600">通知時刻：</span>
+            <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-lg px-2.5 py-1">
+              <input type="number" id="sched-notif-hour" min="0" max="23" placeholder="18" class="w-10 text-center text-sm font-bold bg-transparent focus:outline-none">
+              <span class="text-xs font-bold text-slate-500">時</span>
+              <input type="number" id="sched-notif-min" min="0" max="59" placeholder="55" class="w-10 text-center text-sm font-bold bg-transparent focus:outline-none">
+              <span class="text-xs font-bold text-slate-500">分</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('add-schedule-modal')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100">キャンセル</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-sky-600 hover:bg-sky-700">追加する</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 0B. Edit Long-Term Goal Modal -->
+  <div id="longterm-goal-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-base text-slate-900">最終的な目標（長期目標）を編集</h3>
+        <button onclick="closeModal('longterm-goal-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form id="longterm-goal-form" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">最終目標（志望校・達成したいゴール）</label>
+          <input type="text" id="lt-goal-title-input" required placeholder="例: ○○大学 △△学部 現役合格！" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">決意・詳細メモ（任意）</label>
+          <textarea id="lt-goal-note-input" rows="3" placeholder="例: 共通テストで85%以上取る！毎日の基礎固めを怠らない。" class="w-full text-sm border border-slate-200 rounded-xl px-3 py-2"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('longterm-goal-modal')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100">キャンセル</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-amber-500 hover:bg-amber-600">保存する</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- 1. Add Daily Task Modal -->
   <div id="add-task-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
@@ -789,10 +930,15 @@
         title: '第2回 全統共通テスト模試',
         date: getOffsetDateStr(20)
       },
+      longTermGoal: {
+        title: '第一志望校 現役合格！',
+        note: '毎日の積み重ねを大切にして、絶対に合格を勝ち取る！'
+      },
       materials: [],
       logs: [],
       pastExams: [],
-      dailyTasks: []
+      dailyTasks: [],
+      dailySchedules: []
     };
 
     function loadState() {
@@ -802,6 +948,13 @@
           const parsed = JSON.parse(raw);
           appState = { ...appState, ...parsed };
           if (!Array.isArray(appState.dailyTasks)) appState.dailyTasks = [];
+          if (!Array.isArray(appState.dailySchedules)) appState.dailySchedules = [];
+          if (!appState.longTermGoal) {
+            appState.longTermGoal = {
+              title: '第一志望校 現役合格！',
+              note: '毎日の積み重ねを大切にして、絶対に合格を勝ち取る！'
+            };
+          }
         } catch (e) {
           console.error('Failed to parse saved data', e);
         }
@@ -822,6 +975,10 @@
           title: '第2回 全統共通テスト模試',
           date: getOffsetDateStr(20)
         },
+        longTermGoal: {
+          title: '第一志望校 現役合格！',
+          note: '毎日の積み重ねを大切にして、絶対に合格を勝ち取る！'
+        },
         materials: [
           { id: 'mat_1', title: 'ターゲット1900', subject: '英語', totalPages: 1900, currentPage: 1250, laps: 2 },
           { id: 'mat_2', title: '青チャート 数学1', subject: '数学1', totalPages: 420, currentPage: 210, laps: 1 },
@@ -841,6 +998,9 @@
         dailyTasks: [
           { id: 'task_1', date: today, materialId: 'mat_2', title: '青チャート 数学1', subject: '数学1', targetRange: 'P.211〜225（例題10題）', targetAmount: 15, estMinutes: 50, completed: false },
           { id: 'task_2', date: today, materialId: 'mat_1', title: 'ターゲット1900', subject: '英語', targetRange: 'No.1251〜1350（100単語）', targetAmount: 100, estMinutes: 30, completed: true }
+        ],
+        dailySchedules: [
+          { id: 'sched_1', date: today, startTime: '19:00', endTime: '20:30', title: '英語長文演習 ＆ 単語復習', notifEnabled: true, notifTime: '18:55', notified: false }
         ]
       };
       saveState();
@@ -890,6 +1050,12 @@
       return map[subject] || 'bg-slate-100 text-slate-700';
     }
 
+    function formatJaTime(hhmm) {
+      if (!hhmm) return '';
+      const [h, m] = hhmm.split(':');
+      return `${Number(h)}時${String(m).padStart(2, '0')}分`;
+    }
+
     // ==================== RENDER FUNCTIONS ====================
     function renderHeaderAndGoals() {
       const now = new Date();
@@ -920,6 +1086,65 @@
       const diffMs = new Date(appState.milestone.date) - new Date(today);
       const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
       document.getElementById('milestone-days-left').textContent = diffDays >= 0 ? `${diffDays}日` : '終了';
+
+      // Long-Term Goal
+      document.getElementById('longterm-goal-title-display').textContent = appState.longTermGoal.title || '未設定';
+      const noteEl = document.getElementById('longterm-goal-note-display');
+      if (appState.longTermGoal.note) {
+        noteEl.textContent = appState.longTermGoal.note;
+        noteEl.classList.remove('hidden');
+      } else {
+        noteEl.classList.add('hidden');
+      }
+    }
+
+    function renderDailySchedules() {
+      const today = getTodayStr();
+      const list = appState.dailySchedules
+        .filter(s => s.date === today)
+        .sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+
+      const container = document.getElementById('daily-schedules-list');
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-3 px-3 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+            <p class="text-xs text-slate-500">今日の勉強スケジュールはまだありません</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">「＋予定追加」から時間帯と通知を設定できます</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(s => {
+        const rangeLabel = `${formatJaTime(s.startTime)}から${formatJaTime(s.endTime)}まで勉強する`;
+        const notifBadge = s.notifEnabled && s.notifTime
+          ? `<span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${s.notified ? 'bg-slate-200 text-slate-600' : 'bg-amber-100 text-amber-800'}">
+               <i class="fa-solid fa-bell text-[9px]"></i>${formatJaTime(s.notifTime)}${s.notified ? ' (通知済)' : ''}
+             </span>`
+          : `<span class="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
+               <i class="fa-regular fa-bell-slash text-[9px]"></i>通知オフ
+             </span>`;
+
+        return `
+          <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl border border-sky-100 bg-sky-50/50">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-xs font-extrabold text-sky-800">${rangeLabel}</span>
+                ${notifBadge}
+              </div>
+              <p class="text-xs font-semibold text-slate-700 mt-0.5 truncate">${s.title}</p>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button onclick="toggleScheduleNotif('${s.id}')" class="text-slate-500 hover:text-amber-600 p-1.5" title="通知オン/オフ切替">
+                <i class="fa-solid ${s.notifEnabled ? 'fa-bell text-amber-500' : 'fa-bell-slash text-slate-400'} text-xs"></i>
+              </button>
+              <button onclick="deleteDailySchedule('${s.id}')" class="text-slate-400 hover:text-rose-500 p-1.5" title="削除">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     function renderDailyTasks() {
@@ -1206,6 +1431,7 @@
 
     function refreshAllUI() {
       renderHeaderAndGoals();
+      renderDailySchedules();
       renderDailyTasks();
       renderMaterialSelects();
       renderTodayLogs();
@@ -1214,6 +1440,160 @@
       renderPastExams();
       renderCharts();
     }
+
+    // ==================== SCHEDULE & NOTIFICATION LOGIC ====================
+    document.getElementById('open-add-schedule-btn').addEventListener('click', () => {
+      document.getElementById('add-schedule-form').reset();
+      document.getElementById('sched-notif-enabled').checked = true;
+      document.getElementById('sched-notif-time-row').classList.remove('opacity-40', 'pointer-events-none');
+      openModal('add-schedule-modal');
+    });
+
+    document.getElementById('sched-notif-enabled').addEventListener('change', (e) => {
+      const row = document.getElementById('sched-notif-time-row');
+      if (e.target.checked) {
+        row.classList.remove('opacity-40', 'pointer-events-none');
+      } else {
+        row.classList.add('opacity-40', 'pointer-events-none');
+      }
+    });
+
+    document.getElementById('request-notif-perm-btn').addEventListener('click', async () => {
+      if (!('Notification' in window)) {
+        showToast('お使いのブラウザはシステム通知に未対応です（画面内通知は動作します）');
+        return;
+      }
+      const perm = await Notification.requestPermission();
+      if (perm === 'granted') {
+        showToast('通知が許可されました！');
+      } else {
+        showToast('ブラウザの通知がブロックされています。画面内バナーでお知らせします。');
+      }
+    });
+
+    document.getElementById('add-schedule-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const sh = String(document.getElementById('sched-start-hour').value).padStart(2, '0');
+      const sm = String(document.getElementById('sched-start-min').value).padStart(2, '0');
+      const eh = String(document.getElementById('sched-end-hour').value).padStart(2, '0');
+      const em = String(document.getElementById('sched-end-min').value).padStart(2, '0');
+      const title = document.getElementById('sched-title-input').value.trim();
+      const notifEnabled = document.getElementById('sched-notif-enabled').checked;
+
+      let notifTime = '';
+      if (notifEnabled) {
+        const nhRaw = document.getElementById('sched-notif-hour').value;
+        const nmRaw = document.getElementById('sched-notif-min').value;
+        const nh = nhRaw !== '' ? String(nhRaw).padStart(2, '0') : sh;
+        const nm = nmRaw !== '' ? String(nmRaw).padStart(2, '0') : sm;
+        notifTime = `${nh}:${nm}`;
+        if ('Notification' in window && Notification.permission === 'default') {
+          try { await Notification.requestPermission(); } catch (_) {}
+        }
+      }
+
+      appState.dailySchedules.push({
+        id: 'sched_' + Date.now(),
+        date: getTodayStr(),
+        startTime: `${sh}:${sm}`,
+        endTime: `${eh}:${em}`,
+        title,
+        notifEnabled,
+        notifTime,
+        notified: false
+      });
+
+      saveState();
+      closeModal('add-schedule-modal');
+      renderDailySchedules();
+      showToast('勉強スケジュールを追加しました');
+    });
+
+    function toggleScheduleNotif(id) {
+      const item = appState.dailySchedules.find(s => s.id === id);
+      if (!item) return;
+      item.notifEnabled = !item.notifEnabled;
+      if (item.notifEnabled) item.notified = false;
+      saveState();
+      renderDailySchedules();
+      showToast(item.notifEnabled ? '通知をオンにしました' : '通知をオフにしました');
+    }
+
+    function deleteDailySchedule(id) {
+      appState.dailySchedules = appState.dailySchedules.filter(s => s.id !== id);
+      saveState();
+      renderDailySchedules();
+      showToast('スケジュールを削除しました');
+    }
+
+    function playNotificationChime() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.setValueAtTime(1046.5, ctx.currentTime + 0.18);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+      } catch (_) {}
+    }
+
+    function checkScheduleNotifications() {
+      const now = new Date();
+      const today = getTodayStr();
+      const currentHHMM = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      let changed = false;
+
+      appState.dailySchedules.forEach(s => {
+        if (s.date === today && s.notifEnabled && !s.notified && s.notifTime === currentHHMM) {
+          s.notified = true;
+          changed = true;
+          const msg = `${formatJaTime(s.startTime)}〜${formatJaTime(s.endTime)}：${s.title}`;
+          document.getElementById('schedule-alert-text').textContent = msg;
+          document.getElementById('schedule-alert-banner').classList.remove('hidden');
+          playNotificationChime();
+
+          if ('Notification' in window && Notification.permission === 'granted') {
+            try {
+              new Notification('StudyLog Pro 勉強スケジュール通知', { body: msg });
+            } catch (_) {}
+          }
+        }
+      });
+
+      if (changed) {
+        saveState();
+        renderDailySchedules();
+      }
+    }
+
+    setInterval(checkScheduleNotifications, 5000);
+
+    // ==================== LONG-TERM GOAL LOGIC ====================
+    document.getElementById('edit-longterm-goal-btn').addEventListener('click', () => {
+      document.getElementById('lt-goal-title-input').value = appState.longTermGoal.title || '';
+      document.getElementById('lt-goal-note-input').value = appState.longTermGoal.note || '';
+      openModal('longterm-goal-modal');
+    });
+
+    document.getElementById('longterm-goal-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      appState.longTermGoal = {
+        title: document.getElementById('lt-goal-title-input').value.trim(),
+        note: document.getElementById('lt-goal-note-input').value.trim()
+      };
+      saveState();
+      closeModal('longterm-goal-modal');
+      renderHeaderAndGoals();
+      showToast('最終的な目標を保存しました');
+    });
 
     // ==================== DAILY TASKS LOGIC ====================
     document.getElementById('open-add-task-btn').addEventListener('click', () => {
@@ -1623,6 +2003,7 @@
       appState.logs = [];
       appState.pastExams = [];
       appState.dailyTasks = [];
+      appState.dailySchedules = [];
       saveState();
       refreshAllUI();
       closeModal('data-modal');
