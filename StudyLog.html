@@ -1029,7 +1029,9 @@
             const isMe = (uid === myUserId);
             const timeAgo = Math.floor((Date.now() - user.updatedAt) / 1000 / 60);
 
-            if (timeAgo > 15 && !isMe) return;
+          // 勉強中であれば時間が経っても消さない。休憩中で15分以上古い場合のみ除外
+if (!user.isStudying && timeAgo > 15 && !isMe) return;
+
 
             const statusBadge = user.isStudying
               ? `<span class="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md animate-pulse">📚 勉強中 (${user.subject})</span>`
