@@ -322,7 +322,17 @@
           </button>
         </div>
       </div>
-
+<!-- ▼ 手動ステータス切り替えボタン ▼ -->
+<div class="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-slate-100">
+  <span class="text-xs text-slate-500 font-bold">手動ステータス:</span>
+  <button onclick="manualSetStatus(true)" class="text-xs font-bold px-3 py-1 rounded-lg bg-emerald-100 text-emerald-800">
+    📚 勉強中にする
+  </button>
+  <button onclick="manualSetStatus(false)" class="text-xs font-bold px-3 py-1 rounded-lg bg-slate-200 text-slate-700">
+    ⚪️ 休憩中にする
+  </button>
+</div>
+      
       <!-- Milestone Card -->
       <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm">
         <div class="flex items-center justify-between mb-2">
@@ -2165,6 +2175,13 @@ if (!user.isStudying && timeAgo > 15 && !isMe) return;
     loadState();
     refreshAllUI();
     listenGroupPresence();
+   function manualSetStatus(isStudying) {
+  const subj = document.getElementById('timer-subject-select').value;
+  updateMyPresence(isStudying, isStudying ? subj : '休憩中');
+  showToast(isStudying ? 'ステータスを「勉強中」に変更しました' : 'ステータスを「休憩中」に変更しました');
+}
+
+
   </script>
 </body>
 </html>
